@@ -19,8 +19,8 @@ N = sqrt(size(alphas, 1)) - 1;
 [R, T, P] = shaasp.xyz2rtp(X(:), Y(:), Z(:));
 
 % Reconstruct sound field pressure at each plot point.
-jn = shaasp.sph_jn(N, k, R);
-ynm = shaasp.sph_ynm(N, T, P);
+jn = shaasp.sph_jn(N, k, R).';
+ynm = shaasp.sph_ynm(N, T, P).';
 sfd = (jn .* ynm) * alphas;
 sfd = reshape(sfd, size(X));
 
