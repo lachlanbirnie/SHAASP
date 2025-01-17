@@ -33,13 +33,13 @@ function [M, T, P] = sph_music(alpha, num_src, r, k, options)
 % Email: Lachlan.Birnie@anu.edu.au
 % Website: https://github.com/lachlanbirnie
 % Creation: 19-Dec-2024
-% Last revision: 19-Dec-2024
+% Last revision: 17-Jan-2025
 
 arguments
     alpha (:,:,:)
     num_src = 1
-    r = []
-    k = []
+    r = inf;
+    k (1,1,:) = []
     options.ngrid = 360
     options.logscale = true;
     options.f_plot = false;
@@ -50,41 +50,32 @@ end
 N = sqrt(size(alpha, 1)) - 1;
 
 % Get spatial correlation matrix Ra from alpha.
-if ndims(alpha) <=2
-    % Alpha [N,1] or [N,K].
-    alpha = permute(alpha, [1,3,2]);  % [N,1,K]
-    Ra = pagemtimes(alpha, 'none', alpha, 'ctranspose');  % [N,N,K]
-else
-    % Alpha [N,K,T], average over time dimension.
-    alpha = permute(alpha, [1,4,2,3]);  % [N,1,K,T]
-    Ra = pagemtimes(alpha, 'none', alpha, 'ctranspose');  % [N,N,K,T]
-    Ra = mean(Ra, 4, "omitmissing");  % [N,N,K]
-end
+alpha = permute(alpha, [1,3,2]);  % [N,T,K]
+Ra = pagemtimes(alpha, 'none', alpha, 'ctranspose');  % [N,N,K]
 
 % Create localisation / plotting grid.
-t = linspace(0, pi, options.ngrid).';
-p = linspace(-pi, pi, options.ngrid).';
+t = linspace(0, pi, floor(options.ngrid/2)).';
+p = linspace(0, 2*pi, options.ngrid).';
 [T,P] = meshgrid(t,p);
 M = zeros(size(T));
 
 % Far-field MUSIC.
-if isempty(r) || isinf(r)
+if isinf(r)
     % Frequency smoothing.
     Rsmooth = mean(Ra, 3);
     [U,~,~] = svd(Rsmooth);
     Un = U(:, num_src+1:end);
 
     % Far-field steering vector.
-    y = (-1i).^shaasp.SPHMacros.n_set(N) .* (4*pi) .* conj(shaasp.sph_ynm(N, T(:), P(:)));
+    y = (1i).^shaasp.SPHMacros.n_set(N) .* (4*pi) .* conj(shaasp.sph_ynm(N, T(:), P(:)));  % [N,L]
 
     % Far-field MUSIC spectra.
-    M(:) = 1 ./ sum(abs( y * Un ).^2, 2);
-    M = reshape(M, [length(t), length(p)]);
+    M(:) = 1 ./ sum(abs( Un' * y ).^2, 1);
 
 % Near-field MUSIC.
 else
     % Near-field steering vector.
-    y = 1i .* permute(k(:),[2,3,1]) .* shaasp.sph_hn(N,k,r) .* conj(shaasp.sph_ynm(N, T(:), P(:)));  % [Q,N,K]
+    y = -1i .* k .* shaasp.sph_hn2(N,k,r) .* conj(shaasp.sph_ynm(N, T(:), P(:)));  % [N,L,K]
 
     nbin = size(alpha, 3);
     Mband = zeros(length(T(:)), nbin);
@@ -95,16 +86,17 @@ else
         Un = U(:, num_src+1:end);
         
         % Near-field MUSIC spectra.
-        Mband(:,ibin) = 1 ./ sum(abs( y(:,:,ibin) * Un ).^2, 2);  % v2. correct.
+        Mband(:,ibin) = 1 ./ sum(abs( Un' * y(:,:,ibin) ).^2, 1);
     end
 
     % Average MUSIC spectra over frequencies.
-    M = mean(Mband, 2, 'omitmissing');
-    M = reshape(M, [length(t), length(p)]);
-    M = M ./ max(abs(M(:)));  % Normalise M.
-    if options.logscale
-        M = 10 .* log10(M);  % Log scale.
-    end
+    M(:) = mean(Mband, 2, 'omitmissing');
+end
+
+M = M ./ max(abs(M(:)));  % Normalise M.
+
+if options.logscale
+    M = 10 .* log10(M);  % Log scale.
 end
 
 % Plot MUSIC spectra.

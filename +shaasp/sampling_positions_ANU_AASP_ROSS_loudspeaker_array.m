@@ -1,4 +1,4 @@
-function [r,t,p,x,y,z,w] = sampling_positions_ANU_AASP_ROSS_loudspeaker_array()
+function [r,t,p,x,y,z,w] = sampling_positions_ANU_AASP_ROSS_loudspeaker_array(inds)
 % SAMPLING_POSITIONS_ANU_AASP_BAB_LOUDSPEAKER_ARRAY - (x,y,z) (r,theta,phi)
 %
 % Description
@@ -21,82 +21,40 @@ function [r,t,p,x,y,z,w] = sampling_positions_ANU_AASP_ROSS_loudspeaker_array()
 % Email: Lachlan.Birnie@anu.edu.au
 % Website: https://github.com/lachlanbirnie
 % Creation: 16-Dec-2022
-% Last revision: 16-Dec-2024
+% Last revision: 14-Jan-2024
 
-t = [124
-    124
-    124
-    90
-    90
-    69
-    21
-    56
-    90
-    90
-    69
-    21
-    21
-    56
-    56
-    21
-    159
-    159
-    111
-    124
-    90
-    56
-    56
-    90
-    159
-    159
-    111
-    90
-    56
-    124
-    124
-    90] .* (2*pi/360);
+arguments
+    inds = []
+end
 
-p = [247.5
-    202.5
-    157.5
-    180
-    135
-    112.5
-    112.5
-    157.5
-    225
-    270
-    292.5
-    292.5
-    22.5
-    247.5
-    202.5
-    202.5
-    202.5
-    292.5
-    292.5
-    337.5
-    315
-    337.5
-    22.5
-    0
-    22.5
-    112.5
-    112.5
-    90
-    67.5
-    67.5
-    22.5
-    45] .* (2*pi/360);
+t = [124, 124, 124, 90, 90, 69, 21, 56, 90, 90, 69, 21, 21, 56, 56, ...
+     21, 159, 159, 111, 124, 90, 56, 56, 90, 159, 159, 111, 90, 56, ...
+     124, 124, 90].' .* (2*pi/360);
+
+p = [112.5, 157.5, 202.5, 180, 225, 247.5, 247.5, 202.5, 135, 90, ...
+    67.5, 67.5, 337.5, 112.5, 157.5, 157.5, 157.5, 67.5, 67.5, 22.5, ...
+    45, 22.5, 337.5, 360, 337.5, 247.5, 247.5, 270, 292.5, 292.5, ...
+    337.5, 315].' .* (2*pi/360);
 
 r = ones([32, 1]) .* 1.11;
 
-% Cartesian (x,y,z) coordinates (m).
+% Cartesian (x,y,z) coordinates (meters).
 x = (r .* sin(t) .* cos(p));
 y = (r .* sin(t) .* sin(p));
 z = (r .* cos(t));
 
 w = [];  % Unknown.
+
+% Optional, only selected inds.
+if inds
+    r = r(inds);
+    t = t(inds);
+    p = p(inds);
+    x = x(inds);
+    y = y(inds);
+    z = z(inds);
+    w = [];
+end
 
 % Plot the positions if no output.
 if ~nargout
