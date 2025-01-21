@@ -2,8 +2,6 @@ function sampling_positions_plot_on_sphere(x,y,z)
 % Plot sampling positions on a sphere to visualize.
 % Lachlan Birnie - 16-Dec-2024
     R = mean(sqrt(x.^2 + y.^2 + z.^2));
-
-    fig = figure('Color', [1,1,1]);
     
     % Origin.
     plot3(0, 0, 0, 'kx');
@@ -24,7 +22,7 @@ function sampling_positions_plot_on_sphere(x,y,z)
     % Sampling positions.
     for i = (1 : length(x))
         plot3(x(i), y(i), z(i), 'ko', 'LineWidth', 2); 
-        text(x(i)*1.1, y(i)*1.1, z(i)*1.1, sprintf('%i',i));
+        text(x(i)*1.1, y(i)*1.1, z(i)*1.1, sprintf('%i',i), 'Color', 'k');
     end
 
     axis('equal');
