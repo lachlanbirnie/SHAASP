@@ -10,7 +10,7 @@ arguments
     kind {mustBeMember(kind, ["+", "incoming", "-", "outgoing"])} = '-'
 end
 
-n_vals = shaasp.SPHMacros.n_set(N).';  %[0,1,1,1,2 ...].'
+n_vals = shaasp.SPHMacros.n_set(N);  %[0,1,1,1,2 ...].'
 
 if contains(kind, {'+','incoming'})
     coe_sign = +1i;
