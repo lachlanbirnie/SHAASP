@@ -1,4 +1,4 @@
-function [r,t,p,x,y,z,spacing] = sampling_positions_BilateralGlassesV1()
+function [r,t,p,x,y,z,w,spacing] = sampling_positions_BilateralGlassesV1(inds)
 % Lachlan Birnie
 % 18-Nov-2024
 
@@ -27,15 +27,20 @@ right_local_R = mean(right_local_rtp(:,1));
 right_global_origin = spacing;
 
 % Outputs.
+if ~nargin
+    inds = (1:8);
+end
 xyz = [left_local_xyz; right_local_xyz];
-x = xyz(:,1);
-y = xyz(:,2);
-z = xyz(:,3);
+x = xyz(inds,1);
+y = xyz(inds,2);
+z = xyz(inds,3);
 
 rtp = [left_local_rtp; right_local_rtp];
-r = rtp(:,1);
-t = rtp(:,2);
-p = rtp(:,3);
+r = rtp(inds,1);
+t = rtp(inds,2);
+p = rtp(inds,3);
+
+w = ones(size(r));
 
 
 % plot.

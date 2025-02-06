@@ -19,10 +19,21 @@ function sampling_positions_plot_on_sphere(x,y,z)
     sz = sz .* R;
     surf(sx, sy, sz, 'FaceColor', 'none', 'EdgeColor', 'c', 'LineStyle', '--');
 
+    % Add indexes to the plot.
+    if numel(x) < 100
+        add_text = true;
+    else
+        add_text = false;
+    end
+
     % Sampling positions.
-    for i = (1 : length(x))
-        plot3(x(i), y(i), z(i), 'ko', 'LineWidth', 2); 
-        text(x(i)*1.1, y(i)*1.1, z(i)*1.1, sprintf('%i',i), 'Color', 'k');
+    if add_text
+        for i = (1 : numel(x))
+            plot3(x(i), y(i), z(i), 'ko', 'LineWidth', 2);
+            text(x(i)*1.1, y(i)*1.1, z(i)*1.1, sprintf('%i',i), 'Color', 'k');
+        end
+    else
+        plot3(x(:), y(:), z(:), 'ko', 'LineWidth', 2);
     end
 
     axis('equal');

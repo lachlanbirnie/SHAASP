@@ -30,8 +30,8 @@ function [c] = sph_bninv_regularization(bnkr, type, options)
 % Last revision: 16-Dec-2024
 
 arguments
-    bnkr
-    type {ismember(type,{'conv','PWD','R-PWD','Tikhonov','Softknee'})}
+    bnkr (:,:,:)
+    type {ismember(type,["conv","PWD","R-PWD","Tikhonov","Softknee"])} = "R-PWD";
     options.R_PWD_SNR_DB = 40;
     options.TIKHONOV_LAMBDA = 0.1;
     options.SOFTKNEE_AMP_DB = 62;

@@ -45,7 +45,7 @@ arguments
 end
 
 % STFT settings.
-wlen = 2048;
+wlen = 512;
 hop = wlen/2;
 nfft = 2 * wlen;
 wind = shaasp.cola_window(wlen, hop, 'wola');
