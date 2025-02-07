@@ -75,7 +75,7 @@ if isinf(r)
 % Near-field MUSIC.
 else
     % Near-field steering vector.
-    y = -1i .* k .* shaasp.sph_hn2(N,k,r) .* conj(shaasp.sph_ynm(N, T(:), P(:)));  % [N,L,K]
+    y = -1i .* k .* shaasp.sph_hn(N,k,r,"kind","2") .* conj(shaasp.sph_ynm(N, T(:), P(:)));  % [N,L,K]
 
     nbin = size(alpha, 3);
     Mband = zeros(length(T(:)), nbin);

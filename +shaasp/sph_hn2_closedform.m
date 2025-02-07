@@ -8,7 +8,7 @@ function [hn, hnm] = sph_hn2_closedform(N,k,r,options)
 %   hn = [N+1, r, k]
 %   hnm = [(N+1)^2, r, k] (padded for nm pairs)
 %
-% See also: sph_hn2, sph_hn_closedform
+% See also: sph_hn, sph_hn_closedform
 %
 % Author: Lachlan Birnie
 % Audio & Acoustic Signal Processing Group - Australian National University
