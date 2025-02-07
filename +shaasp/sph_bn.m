@@ -39,14 +39,14 @@ function [bn] = sph_bn(N,k,r,type,options)
 % Subfunctions: none
 % MAT-files required: none
 %
-% See also: sph_jn, sph_bn_rigid,  sph_bn_cardioid.
+% See also: sph_jn, sph_hn, sph_djndx, sph_dhndx.
 %
 % Author: Lachlan Birnie
 % Audio & Acoustic Signal Processing Group - Australian National University
 % Email: Lachlan.Birnie@anu.edu.au
 % Website: https://github.com/lachlanbirnie
 % Creation: 28-Jan-2021
-% Last revision: 10-Jan-2025
+% Last revision: 07-Feb-2025
 
     arguments
         N (1,1) {mustBeNonnegative, mustBeInteger}
@@ -56,20 +56,19 @@ function [bn] = sph_bn(N,k,r,type,options)
         options.r_baff (1,:) {mustBeNonnegative} = r
         options.orientation {mustBeMember(options.orientation, ["[N,Q]", "[Q,N]", "[N,Q,K]", "[Q,N,K]"])} = '[N,Q]'
     end
-    
-    import shaasp.sph_jn
-    import shaasp.sph_bn_rigid
-    import shaasp.sph_bn_cardioid
 
     switch type
         case 'open'
-            bn = sph_jn(N,k,r);
+            bn = shaasp.sph_jn(N,k,r);
 
         case 'rigid'
-            bn = sph_bn_rigid(N,k,r,options.r_baff);
+            bn = shaasp.sph_jn(N,k,r) ...
+                - ( shaasp.sph_djndx(N,k,options.r_baff) ...
+                    ./ shaasp.sph_dhndx(N,k,options.r_baff) ) ...
+                .* shaasp.sph_hn(N,k,r);
 
         case 'cardioid'
-            bn = sph_bn_cardioid(N,k,r);
+            bn = shaasp.sph_jn(N,k,r) - 1i .* shaasp.sph_djndx(N,k,r);
 
         otherwise
             error('Invalid array baffle type.');
