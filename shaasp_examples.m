@@ -1,5 +1,3 @@
-addpath('../../');
-
 %% Example: spherical harmonic coefficients
 
 % Setup acoustic environment.
@@ -15,7 +13,7 @@ mic_r = 0.042;  % Microphone radius / Region of interest.
 
 % Simulate spherical harmonic coefficients.
 N = ceil(k * mic_r);  % Truncation order.
-alphas = 1i .* k .* shaasp.sph_hn(N, k, src_r) .* conj(shaasp.sph_ynm(N, src_theta, src_phi));
+alphas = 1i .* k .* shaasp.sph_hn(N, k, src_r, "orientation", "[N,Q]") .* conj(shaasp.sph_ynm(N, src_theta, src_phi,"orientation", "[N,Q]"));
 
 
 %% Example: spherical harmonic sound field reconstruction
@@ -25,7 +23,7 @@ mic_theta = pi/2; % Microphone position.
 mic_phi = 0;
 
 % Reconsturct SH sound field at microphone.
-p = sum(alphas .* shaasp.sph_jn(N, k, mic_r) .* shaasp.sph_ynm(N, mic_theta, mic_phi), 2);
+p = sum(alphas .* shaasp.sph_jn(N, k, mic_r, "orientation", "[N,Q]") .* shaasp.sph_ynm(N, mic_theta, mic_phi, "orientation", "[N,Q]"), 2);
 
 % ---
 
@@ -57,10 +55,10 @@ mic_pressure = shaasp.sfd_greens_sphcoord('ps', k, [src_r, src_theta, src_phi], 
 % --- 
 
 N = 1;  % Change back to first order, was 10 from previous example.
-measured_alphas = pinv(shaasp.sph_jn(N, k, mic_r) .* shaasp.sph_ynm(N, mic_theta, mic_phi)) * mic_pressure;
+measured_alphas = pinv(shaasp.sph_jn(N, k, mic_r, "orientation", "[Q,N]") .* shaasp.sph_ynm(N, mic_theta, mic_phi, "orientation", "[Q,N]")) * mic_pressure;
 
 % Compare to theory.
-disp([measured_alphas, alphas(1:4).']);
+disp([measured_alphas, alphas(1:4)]);
   %  0.2432 - 0.1429i   0.2432 - 0.1429i
   % -0.1588 - 0.3075i  -0.1588 - 0.3074i
   %  0.0001 + 0.0000i  -0.0000 - 0.0000i
