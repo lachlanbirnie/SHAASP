@@ -29,7 +29,7 @@ function [alphas] = sph_alphas_freefield(source_type, source_rtp, N, k, kind)
 % Audio & Acoustic Signal Processing Group - Australian National University
 % Email: Lachlan.Birnie@anu.edu.au
 % Website: https://github.com/lachlanbirnie
-% Creation: 10-Jan-2024
+% Creation: 10-Jan-2025
 % Last revision: 07-Feb-2025
 arguments
     source_type {mustBeMember(source_type, ["planewave", "pointsource", "pw", "ps"])}
