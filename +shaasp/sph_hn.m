@@ -42,13 +42,14 @@ function [hn] = sph_hn(N,k,r,options)
 % Email: Lachlan.Birnie@anu.edu.au
 % Website: https://github.com/lachlanbirnie
 % Creation: 13-Feb-2019
-% Last revision: 10-Jan-2025
+% Last revision: 07-Feb-2025
 
     arguments
         N (1,1) {mustBeNonnegative, mustBeInteger}
         k (1,1,:) {mustBeNonnegative}
         r (1,:) {mustBeNonnegative}
-        options.orientation {mustBeMember(options.orientation, ["[N,Q]", "[Q,N]", "[N,Q,K]", "[Q,N,K]"])} = '[N,Q]'
+        options.orientation {mustBeMember(options.orientation, ["[N,Q]", "[Q,N]", "[N,Q,K]", "[Q,N,K]"])} = '[N,Q]';
+        options.kind {mustBeMember(options.kind, ["first", "second", "1", "2"])} = "first";
     end
                                 
     % Implicit inputs.
@@ -68,12 +69,19 @@ function [hn] = sph_hn(N,k,r,options)
      .* (1 ./ sqrt(arg_k .* arg_r)) ...
      .* besselh(arg_n + 0.5, arg_k .* arg_r);
 
-    % Options orientation.
+    % Options, orientation.
     switch options.orientation
         case {'[Q,N]', '[Q,N,K]'}
             hn = permute(hn, [2,1,3]);
         otherwise
             % hn = permute(hn, [1,2,3]);
+    end
+
+    % Options, kind.
+    switch options.kind
+        case {"second", "2"}
+            hn = conj(hn);
+        otherwise
     end
 
 end
