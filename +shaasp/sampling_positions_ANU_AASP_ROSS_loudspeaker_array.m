@@ -3,8 +3,8 @@ function [r,t,p,x,y,z,w] = sampling_positions_ANU_AASP_ROSS_loudspeaker_array(in
 %
 % Description
 %
-%   Positions of the 30 channel loudspeaker array in ANU AASP lab.
-%   (The old one in the BAB Lab).
+%   Positions of the 32 channel loudspeaker array in ANU AASP lab.
+%   (The new one in the Ian Ross Lab).
 %
 % Outputs
 %
